@@ -37,6 +37,15 @@ def delete(request, id):
     if request.method == "DELETE":
         book = Book(id=id)
         book.delete()
+
+
+@csrf_exempt
+def delete(request, id):
+    if request.method == "GET":
+        book = Book.objects.get(id=id)
+        serializer = BookSerializer(book)
+        return JsonResponse(serializer.data)
+        
         
         
         
