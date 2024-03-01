@@ -32,27 +32,25 @@ def Insert_book(request):
         serializer = BookSerializer(books, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+@csrf_exempt
+def Insert_user(request):
+    # add user
+    if request.method == "POST":
+        data = JSONParser().parse(request)
 
-
-# @csrf_exempt
-# def Insert_user(request):
-#     # add user
-#     if request.method == "POST":
-#         data = JSONParser().parse(request)
-
-#         User_serializer = UserSerializer(data=data)
-#         if User_serializer.is_valid():
-#             User_serializer.save()
-#         else:
-#             return HTTPException()
+        User_serializer = UserSerializer(data=data)
+        if User_serializer.is_valid():
+            User_serializer.save()
+        else:
+            return HTTPException()
         
-#         return JsonResponse(User_serializer.data)
+        return JsonResponse(User_serializer.data)
     
-#     # get all users
-#     if request.method == "GET":
-#         users = User.objects.all()
-#         User_serializer = UserSerializer(users, many=True)
-#         return JsonResponse(User_serializer.data, safe=False)
+    # get all users
+    if request.method == "GET":
+        users = User.objects.all()
+        User_serializer = UserSerializer(users, many=True)
+        return JsonResponse(User_serializer.data, safe=False)
 
 @csrf_exempt
 def delete(request, id):
