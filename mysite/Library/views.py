@@ -86,10 +86,34 @@ def delete(request, id):
 #         })
 #     # return JsonResponse(book_serializer.data)
 
-def borrow_book(request, title, user_name):
+# def borrow_book(request, title, user_name):
+#     try:
+#         book = Book.objects.get(title=title)
+#         user = User.objects.get(first_name=user_name)
+#     except (Book.DoesNotExist, User.DoesNotExist):
+#         return JsonResponse({'message': 'Book or user not found'}, status=404)
+
+#     if request.method == 'POST':
+#         book.is_borrowed = True
+#         book.borrower = user
+#         book.save()
+
+#         book_serializer = BookSerializer(book)
+#         user_serializer = UserSerializer(user)
+
+#         return JsonResponse({
+#             'message': f'Book "{book.title}" is now borrowed by {user.first_name} {user.last_name}',
+#             'book': book_serializer.data,
+#             'borrower': user_serializer.data,
+#         })
+
+#     return JsonResponse({'message': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def borrow_book(request, book_id, user_id):
     try:
-        book = Book.objects.get(title=title)
-        user = User.objects.get(first_name=user_name)
+        book = Book.objects.get(id=book_id)
+        user = User.objects.get(id=user_id)
     except (Book.DoesNotExist, User.DoesNotExist):
         return JsonResponse({'message': 'Book or user not found'}, status=404)
 
@@ -102,13 +126,12 @@ def borrow_book(request, title, user_name):
         user_serializer = UserSerializer(user)
 
         return JsonResponse({
-            'message': f'Book "{book.title}" is now borrowed by {user.first_name} {user.last_name}',
+            'message': f'Book "{book.title}" is now borrowed by {user.first_name}',
             'book': book_serializer.data,
             'borrower': user_serializer.data,
         })
 
     return JsonResponse({'message': 'Invalid request method'}, status=400)
-
 
             
         
