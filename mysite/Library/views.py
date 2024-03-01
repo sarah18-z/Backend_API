@@ -4,9 +4,9 @@ from django.http import HttpResponse, JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-
 from Library.models import Book,User
 from Library.serializers import BookSerializer, UserSerializer
+from datetime import datetime
 
 # to avoid TypeErrors : must receive a Request and return a Response
 def Hello_World(request):
@@ -116,22 +116,22 @@ def borrow_book(request, book_id, user_id):
         user = User.objects.get(id=user_id)
     except (Book.DoesNotExist, User.DoesNotExist):
         return JsonResponse({'message': 'Book or user not found'}, status=404)
-
+    
     if request.method == 'POST':
         book.is_borrowed = True
         book.borrower = user
+        book.borrowed_date = datetime.now()
         book.save()
 
         book_serializer = BookSerializer(book)
         user_serializer = UserSerializer(user)
 
         return JsonResponse({
-            'message': f'Book "{book.title}" is now borrowed by {user.first_name}',
+            'message': f'Book "{book.title}" is now borrowed by {user.first_name} {user.last_name} on {book.borrowed_date}',
             'book': book_serializer.data,
             'borrower': user_serializer.data,
         })
 
     return JsonResponse({'message': 'Invalid request method'}, status=400)
-
             
-        
+     
